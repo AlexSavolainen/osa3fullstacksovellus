@@ -16,6 +16,8 @@ app.use(cors())
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
+    console.log('rewgewfwefwefewfwfwejuu')
+    console.log(error)
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
@@ -23,7 +25,9 @@ const errorHandler = (error, request, response, next) => {
     else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
       }
-
+    else if(error.name === 'ReferenceError'){
+        return response.status(400).json({ error: error.message })
+      }
     next(error)
 }
 
@@ -87,8 +91,9 @@ app.post('/api/persons', (request, response, next) => {
         person.save().then(result => {
             response.json(result)
         })
-        .catch(error => next(error))
     }
+    
+    
     
 })
 
