@@ -8,7 +8,7 @@ if (process.argv.length<3) {
 const password = process.argv[2]
 
 const url =
-  `mongodb+srv://fullstack:` + password + `@cluster0.214w4b8.mongodb.net/personApp?retryWrites=true&w=majority`
+  'mongodb+srv://fullstack:' + password + '@cluster0.214w4b8.mongodb.net/personApp?retryWrites=true&w=majority'
 mongoose.connect(url)
 
 const personSchema = new mongoose.Schema({
@@ -19,18 +19,18 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema)
 
 const person = new Person({
-    name: process.argv[3],
-    number: process.argv[4]
-}) 
+  name: process.argv[3],
+  number: process.argv[4]
+})
 
 if (process.argv.length === 5)
-person.save().then(result => {
+  person.save().then(() => {
     console.log('Added' + process.argv[3] + 'number' + process.argv[4] + 'to phonebook' )
     mongoose.connection.close()
   })
 else{
-console.log('phonebook:')
-Person.find({}).then(result => {
+  console.log('phonebook:')
+  Person.find({}).then(result => {
     result.forEach(person => {
       console.log(person)
       mongoose.connection.close()
