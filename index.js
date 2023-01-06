@@ -1,6 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
+const Person = require('./models/Person')
 
 
 const app = express()
@@ -10,32 +13,15 @@ app.use(morgan('tiny'))
 app.use(cors())
 app.use(express.static('build'))
 
-morgan.token('content', function getContent (req) {return req.body})
+//morgan.token('content', function getContent (req) {return req.body})
 
-let persons = [{
-    "id": 1,
-    "name": "Arto Hellas",
-    "number": "040-123456"
-},
-{
-    "id": 2,
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-},
-{
-    "id": 3,
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-},
-{
-    "id": 4,
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
-}]
 
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(person =>{
+        response.json(person)
+    })
+
 })
 
 app.get('/api/info', (request, response) => {
@@ -63,21 +49,21 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const person = request.body
-    if (!person.name || !person.number){
+    const body = request.body
+    if (!body.name || !body.number){
         response.status(400).json({error: 'name or number missing'})
     }
-    if (persons.some(x => x.name === person.name)){
-        response.status(400).json({error: 'name already in list'})
-    }
     else{
-    person.id = Math.floor(Math.random()*10000)
-    persons = persons.concat(person)
-    response.json(person)
-    console.log(person)
-    }   
-})
-const PORT = process.env.PORT || 3001
+        const person = new Person({
+            name: body.name,
+            number: body.number
+        })
+        person.save().then(result => {
+            response.json(result)
+    })   
+}})
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
