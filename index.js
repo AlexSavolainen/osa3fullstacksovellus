@@ -15,8 +15,6 @@ app.use(cors())
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
-  console.log('rewgewfwefwefewfwfwejuu')
-  console.log(error)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -81,6 +79,9 @@ app.post('/api/persons', (request, response) => {
   const body = request.body
   if (!body.name || !body.number) {
     response.status(400).json({ error: 'name or number missing' })
+  }
+  if (Person.findOne({ name: body.name })){
+    response.status(400).json({ error: 'A person with that name aleady exists' })
   }
   else {
     const person = new Person({
