@@ -93,7 +93,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndUpdate(request.params.id, { $set:request.body })
+  Person.findByIdAndUpdate(request.params.id, { $set:request.body }, { new:true })
     .then(
       response.status(204).end())
     .catch(error => next(error))
