@@ -75,13 +75,10 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
   if (!body.name || !body.number) {
     response.status(400).json({ error: 'name or number missing' })
-  }
-  if (Person.findOne({ name: body.name })){
-    response.status(400).json({ error: 'A person with that name aleady exists' })
   }
   else {
     const person = new Person({
@@ -91,6 +88,7 @@ app.post('/api/persons', (request, response) => {
     person.save().then(result => {
       response.json(result)
     })
+      .catch(error => next(error))
   }
 
 
