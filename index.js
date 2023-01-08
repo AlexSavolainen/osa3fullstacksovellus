@@ -22,7 +22,7 @@ const errorHandler = (error, request, response, next) => {
   else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
-  else if(error.name === 'ReferenceError'){
+  else if (error.name === 'ReferenceError') {
     return response.status(400).json({ error: error.message })
   }
   next(error)
@@ -90,9 +90,13 @@ app.post('/api/persons', (request, response, next) => {
     })
       .catch(error => next(error))
   }
+})
 
-
-
+app.put('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndUpdate(request.params.id, { $set:request.body })
+    .then(
+      response.status(204).end())
+    .catch(error => next(error))
 })
 
 app.use(errorHandler)
